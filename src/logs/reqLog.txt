@@ -103,3 +103,4 @@
 20260712	18:40:39	 af0af0a1-8d31-405e-b90f-d6f828b8e781 	 POST 	undefined 	/api/v1/auth/logout 
 20260712	18:41:01	 31dae86f-1c7e-4363-ac73-0d4ea749a700 	 POST 	undefined 	/api/v1/auth/login 
 20260712	18:41:27	 0a2ecddc-3374-41d0-a1a9-277db21d54e1 	 POST 	undefined 	/api/v1/auth/logout 
+20260713	21:56:54	 5a13541f-54e4-4208-b4f8-8b16528b83f6 	 POST 	undefined 	/api/v1/auth/register 

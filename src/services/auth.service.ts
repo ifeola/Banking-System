@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import pool from "../database/db.ts";
 import CustomError from "../utils/CustomError.ts";
 import type { User, LoginInput } from "../validators/register.ts";
 import db from "../database/db.ts";
@@ -24,7 +23,7 @@ export async function registerUser(data: User) {
 	const salt = await bcrypt.genSalt(10);
 	const password_hash = await bcrypt.hash(password, salt);
 
-	const result = await pool.query(
+	const result = await db.query(
 		`INSERT INTO users (first_name, last_name, email, phone, password_hash)
      VALUES ($1, $2, $3, $4, $5)
      RETURNING id, first_name, last_name, email, phone, created_at`,

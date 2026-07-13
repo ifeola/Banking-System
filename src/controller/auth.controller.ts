@@ -8,6 +8,7 @@ import {
 	logoutUser,
 } from "../services/auth.service.ts";
 import CustomError from "../utils/CustomError.ts";
+import Account from "../services/Account.service.ts";
 
 export const register = async (
 	req: Request,
@@ -25,7 +26,13 @@ export const register = async (
 	}
 
 	const user = await registerUser(parsed.data);
-	res.status(201).json({ success: true, message: "User registered", user });
+	const account_number = user.phone.slice(1);
+	const account = await Account.create(user.id, account_number, "savings");
+	res.status(201).json({
+		success: true,
+		message: "User registered",
+		user: { ...user, ...account },
+	});
 };
 
 export const login = async (

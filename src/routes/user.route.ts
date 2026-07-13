@@ -1,5 +1,5 @@
 import { Router } from "express";
-import user from "../controller/user.controller.ts";
+import user from "../controller/transaction.controller.ts";
 
 const router: Router = Router();
 
