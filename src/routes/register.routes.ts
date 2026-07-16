@@ -1,9 +1,9 @@
-import { Router } from "express";
-import type { Router as RouterType } from "express";
+import express from "express";
+import type { Router } from "express";
 import { register } from "../controller/auth.controller.ts";
 import catchError from "../utils/catchError.ts";
 
-const router: RouterType = Router();
+const router: Router = express.Router();
 
 router.post("/", catchError(register));
 

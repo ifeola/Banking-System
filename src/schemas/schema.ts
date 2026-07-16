@@ -6,7 +6,7 @@ export const initiateTransferSchema = z.object({
 	destinationAccountNumber: z.string().length(10),
 	amount: z.number().positive().max(5_000_000),
 	narration: z.string().max(100).optional(),
-	idempotencyKey: z.string().min(10).max(100),
+	idempotencyKey: z.string().min(10).max(100).optional(),
 });
 
 export type InitiateTransferInput = z.infer<typeof initiateTransferSchema>;

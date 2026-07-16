@@ -12,7 +12,7 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import errorHandler from "./middlewares/errorHandler.ts";
 import { notFound } from "./middlewares/notFound.middleware.ts";
-import router from "./routes/index.ts";
+import router from "./routes/index.routes.ts";
 import logEvents from "./middlewares/logEvents.ts";
 
 config();

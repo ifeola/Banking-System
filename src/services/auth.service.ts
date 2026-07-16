@@ -57,7 +57,7 @@ export async function loginUser(data: LoginInput, res: Response) {
 
 	const decoded = jwt.decode(refreshToken) as { exp: number };
 	await db.query(
-		"INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, to_timestamp($3))",
+		"INSERT INTO refresh_tokens (user_id, token_hash, expires_at) VALUES ($1, $2, to_timestamp($3))",
 		[user.id, hash, decoded.exp]
 	);
 
@@ -108,5 +108,5 @@ export async function refreshAccessToken(token: string) {
 }
 
 export async function logoutUser(token: string) {
-	await db.query("delete from refresh_tokens where token = $1", [token]);
+	await db.query("delete from refresh_tokens where token_hash = $1", [token]);
 }
