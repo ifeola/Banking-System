@@ -29,6 +29,7 @@ const authenticate = (
 			token,
 			process.env.JWT_ACCESS_SECRET as string
 		) as { user_id: string };
+
 		req.user = decoded;
 		next();
 	} catch (error) {

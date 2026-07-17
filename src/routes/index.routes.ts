@@ -5,13 +5,14 @@ import registerRouter from "./register.routes.ts";
 import { logout, refresh } from "../controller/auth.controller.ts";
 import catchError from "../utils/catchError.ts";
 import transferRouter from "./transfer.routes.ts";
+import { authenticate } from "../middlewares/auth.middleware.ts";
 
 const router: Router = Router();
 
 router.use("/users", userRouter);
 router.use("/auth/login", loginRouter);
 router.use("/auth/register", registerRouter);
-router.post("/transfer", transferRouter);
+router.use("/transfer", authenticate, transferRouter);
 router.post("/auth/logout", catchError(logout));
 router.post("/auth/refresh", catchError(refresh));
 

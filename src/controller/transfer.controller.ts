@@ -17,14 +17,14 @@ const transfer = async (
 	try {
 		await client.query("BEGIN");
 
-		const existing = await client.query(
-			"SELECT * FROM transactions WHERE idempotency_key = $1",
-			[input.idempotencyKey]
-		);
-		if (existing.rows.length > 0) {
-			await client.query("ROLLBACK");
-			return res.status(200).json({ transaction: existing.rows[0] });
-		}
+		// const existing = await client.query(
+		// 	"SELECT * FROM transactions WHERE idempotency_key = $1",
+		// 	[input.idempotencyKey]
+		// );
+		// if (existing.rows.length > 0) {
+		// 	await client.query("ROLLBACK");
+		// 	return res.status(200).json({ transaction: existing.rows[0] });
+		// }
 
 		const accountResult = await client.query(
 			`
@@ -43,8 +43,7 @@ const transfer = async (
 			return next(new CustomError("Account is not active", 400));
 
 		const balanceResult = await client.query(
-			`SELECT COALESCE(SUM(CASE WHEN entry_type = 'credit' THEN amount ELSE -amount END), 0) AS balance
-       FROM ledger_entries WHERE account_id = $1`,
+			`SELECT balance FROM accounts WHERE accounts.id = $1`,
 			[input.sourceAccountId]
 		);
 
@@ -59,7 +58,7 @@ const transfer = async (
 		// 	input.destinationAccountNumber
 		// );
 
-		const to_acc_id = await client.query(
+		const to_acc = await client.query(
 			`
 				select accounts.id from accounts
 				where account_number = $1;
@@ -67,24 +66,20 @@ const transfer = async (
 			[input.destinationAccountNumber]
 		);
 
+		const to_acc_id = to_acc.rows[0];
+
 		if (!to_acc_id) {
 			return next(new CustomError("Account not found", 404));
 		}
 
 		const txResult = await client.query(
 			`
-				select transfer(from_acc UUID, to_acc UUID, amt NUMERIC, descr TEXT DEFAULT NULL);
+				select * from transfer($1, $2, $3, $4);
 			`,
-			[input.sourceAccountId, to_acc_id, input.amount, input.narration]
+			[input.sourceAccountId, to_acc_id.id, input.amount, input.narration]
 		);
 
 		const transaction = txResult.rows[0];
-		const newBalance = currentBalance - input.amount;
-		await client.query(
-			`INSERT INTO ledger_entries (account_id, transaction_id, entry_type, amount, balance_after)
-       VALUES ($1, $2, 'debit', $3, $4)`,
-			[input.sourceAccountId, transaction.id, input.amount, newBalance]
-		);
 
 		await client.query(
 			`INSERT INTO transaction_audit_logs (transaction_id, actor_user_id, action, new_status)

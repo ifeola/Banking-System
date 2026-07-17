@@ -6,7 +6,7 @@ config();
 
 const createAccessToken = (userId: string) => {
 	const token = jwt.sign(
-		{ userId, type: "access" },
+		{ user_id: userId, type: "access" },
 		process.env.JWT_ACCESS_SECRET as string,
 		{
 			expiresIn: "15m",
@@ -18,7 +18,7 @@ const createAccessToken = (userId: string) => {
 
 const createRefreshToken = (userId: string) => {
 	const token = jwt.sign(
-		{ userId, type: "refresh" },
+		{ user_id: userId, type: "refresh" },
 		process.env.JWT_REFRESH_SECRET as string,
 		{
 			expiresIn: "7d",
